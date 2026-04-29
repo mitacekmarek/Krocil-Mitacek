@@ -13,7 +13,7 @@
                 <th>Start (Departure)</th>
                 <th>Cíl (Arrival)</th>
                 <th>Vzdálenost</th>
-            </tr>
+                <th>Odkaz</th> </tr>
         </thead>
         <tbody>
             <?php if (!empty($etapy)): ?>
@@ -24,8 +24,19 @@
                         <td><?= $etapa->departure ?></td>
                         <td><?= $etapa->arrival ?></td>
                         <td><?= $etapa->distance ?> km</td>
+                        
+                        <td>
+                            <?= anchor($etapa->link, 'Zobrazit na webu', [
+                                'target' => '_blank', 
+                                'class'  => 'btn btn-info btn-sm text-white text-center'
+                            ]) ?>
+                        </td>
                     </tr>
                 <?php endforeach; ?>
+            <?php else: ?>
+                <tr>
+                    <td colspan="6" class="text-center">Zatím nebyly nalezeny žádné etapy.</td>
+                </tr>
             <?php endif; ?>
         </tbody>
     </table>

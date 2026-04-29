@@ -22,7 +22,9 @@ class Etapy extends BaseController
     {
         $data = [
             'nazev' => 'La Tropicale Amissa Bongo 2023',
-            'etapy' => $this->EtapaI->findAll() 
+            'etapy' => $this->EtapaI->where('id_race_year', 646)
+                                    ->orderBy('number', 'ASC')
+                                    ->findAll()
         ];
         
         return view('1stranka/index', $data); 
