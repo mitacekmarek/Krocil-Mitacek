@@ -31,7 +31,7 @@ class Database extends Config
         'password'     => '',
         'database'     => 'krocilf',
         'DBDriver'     => 'MySQLi',
-        'DBPrefix'     => '',
+        'DBPrefix'     => 'km_',
         'pConnect'     => false,
         'DBDebug'      => true,
         'charset'      => 'utf8mb4',

@@ -11,6 +11,7 @@ use App\Models\EtapaI;
 class Etapy extends BaseController
 {
     private $EtapaI;
+    
     public function initController(RequestInterface $request, ResponseInterface $response, LoggerInterface $logger)
     {
         parent::initController($request, $response, $logger);
@@ -20,9 +21,10 @@ class Etapy extends BaseController
     public function index()
     {
         $data = [
-            "etapy" = $model->getEtapy();
-            'title' -> 
+            'nazev' => 'La Tropicale Amissa Bongo 2023',
+            'etapy' => $this->EtapaI->findAll() 
         ];
-        return view('1stranka/index', $data);
+        
+        return view('1stranka/index', $data); 
     }
 }
