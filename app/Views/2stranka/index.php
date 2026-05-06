@@ -1,30 +1,27 @@
 <?= $this->extend('layout/template') ?>
 <?= $this->section('content') ?>
 
-<?php 
-  /** @var \App\Models\EtapaI $etapa */ 
-?>
-
 <div class="container mt-4">
     <?php if (isset($etapa) && $etapa !== null): ?>
-        <h1>Etapa č. <?= $etapa->number ?></h1>
-        <p>Trasa: <?= $etapa->departure ?> – <?= $etapa->arrival ?></p>
+        <h1>Etapa č. <?= $etapa->km_number ?? $etapa->number ?? 'Neznámé' ?></h1>
+        <p>Trasa: <?= $etapa->km_departure ?? $etapa->departure ?? '?' ?> – <?= $etapa->km_arrival ?? $etapa->arrival ?? '?' ?></p>
         
         <div class="row mt-4">
             <div class="col-md-4">
                 <ul class="list-group">
-                    <li class="list-group-item">Vzdálenost: <?= $etapa->distance ?> km</li>
-                    <li class="list-group-item">Typ: <?= $etapa->type ?? 'Nespecifikováno' ?></li>
+                    <li class="list-group-item">Vzdálenost: <?= $etapa->km_distance ?? $etapa->distance ?? '0' ?> km</li>
+                    <li class="list-group-item">Typ: <?= $etapa->km_type ?? $etapa->type ?? 'Nespecifikováno' ?></li>
                 </ul>
             </div>
             
             <div class="col-md-8">
                 <h3>Celkové pořadí</h3>
-                <table class="table">
+                <table class="table table-striped">
                     <thead>
                         <tr>
                             <th>Pořadí</th>
-                            <th>Jméno</th>
+                            <th>Jméno (Odkaz)</th>
+                            <th>Čas</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -32,21 +29,25 @@
                             <?php foreach ($ranking as $r): ?>
                                 <tr>
                                     <td><?= $r->rank ?>.</td>
-                                    <td><?= $r->rider_name ?? 'Neznámý jezdec' ?></td>
+                                    <td><?= $r->name_link ?? 'Neznámý jezdec' ?></td>
+                                    <td><?= $r->time ?? '--:--' ?></td>
                                 </tr>
                             <?php endforeach; ?>
                         <?php else: ?>
-                            <tr><td colspan="2">Výsledky nebyly nalezeny.</td></tr>
+                            <tr><td colspan="3" class="text-center">Výsledky pro tuto etapu nebyly nalezeny.</td></tr>
                         <?php endif; ?>
                     </tbody>
                 </table>
             </div>
         </div>
     <?php else: ?>
-        <div class="alert alert-danger">Data o etapě se nepodařilo načíst.</div>
+        <div class="alert alert-danger">
+            <strong>Chyba:</strong> Data o etapě se nepodařilo načíst z tabulky <code>km_stage</code>.
+        </div>
     <?php endif; ?>
 
-    <a href="<?= base_url('etapy') ?>" class="btn btn-secondary">Zpět</a>
+    <hr>
+    <a href="<?= base_url('etapy') ?>" class="btn btn-secondary">Zpět na seznam etap</a>
 </div>
 
 <?= $this->endSection() ?>
