@@ -26,7 +26,6 @@
                         <td class="align-middle"><?= $etapa->arrival ?></td>
                         <td class="align-middle"><?= $etapa->distance ?> km</td>
                         
-                        <!-- Tady je přidané centrování buňky a btn-dark pro černé tlačítko -->
                         <td class="text-center align-middle">
                             <?= anchor($etapa->link, 'Zobrazit na webu', [
                                 'target' => '_blank', 
