@@ -13,22 +13,24 @@
                 <th>Start (Departure)</th>
                 <th>Cíl (Arrival)</th>
                 <th>Vzdálenost</th>
-                <th>Odkaz</th> </tr>
+                <th class="text-center">Odkaz</th>
+            </tr>
         </thead>
         <tbody>
             <?php if (!empty($etapy)): ?>
                 <?php foreach ($etapy as $etapa): ?>
                     <tr>
-                        <td><?= $etapa->id ?></td>
-                        <td><?= $etapa->number ?></td>
-                        <td><?= $etapa->departure ?></td>
-                        <td><?= $etapa->arrival ?></td>
-                        <td><?= $etapa->distance ?> km</td>
+                        <td class="align-middle"><?= $etapa->id ?></td>
+                        <td class="align-middle"><?= $etapa->number ?></td>
+                        <td class="align-middle"><?= $etapa->departure ?></td>
+                        <td class="align-middle"><?= $etapa->arrival ?></td>
+                        <td class="align-middle"><?= $etapa->distance ?> km</td>
                         
-                        <td>
+                        <!-- Tady je přidané centrování buňky a btn-dark pro černé tlačítko -->
+                        <td class="text-center align-middle">
                             <?= anchor($etapa->link, 'Zobrazit na webu', [
                                 'target' => '_blank', 
-                                'class'  => 'btn btn-info btn-sm text-white text-center'
+                                'class'  => 'btn btn-dark btn-sm text-white'
                             ]) ?>
                         </td>
                     </tr>
