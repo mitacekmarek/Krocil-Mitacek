@@ -2,7 +2,6 @@
 <?= $this->section('content') ?>
 
 <?php 
-  // Tato poznámka pomůže editoru pochopit, že $etapa je objekt z tvého modelu
   /** @var \App\Models\EtapaI $etapa */ 
 ?>
 

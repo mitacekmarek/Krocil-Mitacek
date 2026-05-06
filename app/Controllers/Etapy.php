@@ -40,7 +40,7 @@ class Etapy extends BaseController
     
         // Načtení dat - použijeme find(), je to nejrychlejší
         $data['etapa']   = $etapaModel->find($id);
-        $data['ranking'] = $resultModel->where('stage_id', $id)->orderBy('rank', 'ASC')->findAll();
+        $data['ranking'] = $resultModel->where('id_stage', $id)->orderBy('rank', 'ASC')->findAll();
         $data['nazev']   = "Detail etapy";
     
         // Pokud je etapa prázdná, vypíšeme chybu přímo na obrazovku pro ladění
