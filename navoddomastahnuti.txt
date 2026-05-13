@@ -1,0 +1,5 @@
+do terminalu dej
+npm i
+composer update
+obrazky si stahni sam
+a dej git pull a napoj se na git knihovnu
