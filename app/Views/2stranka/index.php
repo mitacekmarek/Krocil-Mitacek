@@ -8,7 +8,7 @@
             <h1>Etapa č. <?= $etapa->number ?? 'Neznámé' ?></h1>
             <p class="fs-5">Trasa: <?= $etapa->departure ?? '?' ?> – <?= $etapa->arrival ?? '?' ?></p>
             
-            <ul class="list-group shadow-sm mx-auto text-start" style="max-width: 400px;">
+            <ul class="list-group shadow-sm mx-auto text-start mb-4" style="max-width: 400px;">
                 <li class="list-group-item">
                     <strong>Vzdálenost:</strong> <?= $etapa->distance ?? '0' ?> km
                 </li>
@@ -19,6 +19,16 @@
                     <strong>Typ trasy:</strong> <?= $etapa->parcour_name ?? 'Nespecifikováno' ?>
                 </li>
             </ul>
+
+            <?php if (!empty($etapa->profile)): ?>
+                <div class="mx-auto" style="max-width: 800px;">
+                    <img src="<?= base_url('obrazky/stages/profiles/' . $etapa->profile) ?>" 
+                         class="img-fluid rounded shadow" 
+                         alt="Profil etapy <?= $etapa->number ?>">
+                </div>
+            <?php else: ?>
+                <p class="text-muted small mt-3">Profil trati není k dispozici.</p>
+            <?php endif; ?>
         </div>
         
         <div class="row justify-content-center">
@@ -40,12 +50,10 @@
                                     <tr>
                                         <td class="text-center fw-bold align-middle"><?= $r->rank ?>.</td>
                                         <td class="align-middle"><?= $r->first_name ?> <?= $r->last_name ?></td>
-                                        
                                         <td class="text-center align-middle">
                                             <span class="fi fi-<?= strtolower($r->country) ?> me-2 border"></span>
                                             <?= strtoupper($r->country) ?>
                                         </td>
-                                        
                                         <td class="text-end align-middle fw-semibold"><?= $r->time ?? '--:--' ?></td>
                                     </tr>
                                 <?php endforeach; ?>
