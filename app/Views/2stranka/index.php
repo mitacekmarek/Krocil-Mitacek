@@ -3,9 +3,11 @@
 
 <div class="container mt-4">
     <?php if (isset($etapa) && $etapa !== null): ?>
+        
         <div class="mb-5 text-center">
             <h1>Etapa č. <?= $etapa->number ?? 'Neznámé' ?></h1>
             <p class="fs-5">Trasa: <?= $etapa->departure ?? '?' ?> – <?= $etapa->arrival ?? '?' ?></p>
+            
             <ul class="list-group shadow-sm mx-auto text-start" style="max-width: 400px;">
                 <li class="list-group-item">
                     <strong>Vzdálenost:</strong> <?= $etapa->distance ?? '0' ?> km
@@ -18,6 +20,7 @@
                 </li>
             </ul>
         </div>
+        
         <div class="row justify-content-center">
             <div class="col-lg-10">
                 <h3 class="text-center mb-4">Celkové pořadí</h3>
@@ -37,7 +40,12 @@
                                     <tr>
                                         <td class="text-center fw-bold align-middle"><?= $r->rank ?>.</td>
                                         <td class="align-middle"><?= $r->first_name ?> <?= $r->last_name ?></td>
-                                        <td class="text-center align-middle"><?= strtoupper($r->country) ?></td>
+                                        
+                                        <td class="text-center align-middle">
+                                            <span class="fi fi-<?= strtolower($r->country) ?> me-2 border"></span>
+                                            <?= strtoupper($r->country) ?>
+                                        </td>
+                                        
                                         <td class="text-end align-middle fw-semibold"><?= $r->time ?? '--:--' ?></td>
                                     </tr>
                                 <?php endforeach; ?>
