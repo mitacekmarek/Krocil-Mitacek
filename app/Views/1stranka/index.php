@@ -5,7 +5,7 @@
     
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h2 class="m-0"><?= $nazev ?></h2>
-        <?= anchor('etapa/upravit', 'Upravit', ['class' => 'btn btn-primary']) ?>
+        <?= anchor('sprava', 'Přidat novou etapu', ['class' => 'btn btn-success fw-bold']) ?>
     </div>
     <hr>
 
@@ -18,7 +18,7 @@
                 <th>Cíl</th>
                 <th>Vzdálenost</th>
                 <th class="text-center">Web</th>
-                <th class="text-center">Etapa</th>
+                <th class="text-center">Akce</th>
             </tr>
         </thead>
         <tbody>
@@ -37,8 +37,16 @@
                                 'class'  => 'btn btn-outline-secondary btn-sm'
                             ]) ?>
                         </td>
+                        
                         <td class="text-center align-middle">
-                            <?= anchor('etapa/detail/' . $etapa->id, 'Detail', ['class' => 'btn btn-dark btn-sm']) ?>
+                            <div class="d-flex justify-content-center gap-1">
+                                <?= anchor('etapa/detail/' . $etapa->id, 'Detail', ['class' => 'btn btn-dark btn-sm']) ?>
+                                <?= anchor('sprava/edit/' . $etapa->id, 'Upravit', ['class' => 'btn btn-warning btn-sm text-dark']) ?>
+                                <?= anchor('sprava/delete/' . $etapa->id, 'Smazat', [
+                                    'class' => 'btn btn-danger btn-sm',
+                                    'onclick' => "return confirm('Opravdu chcete tuto etapu smazat?');"
+                                ]) ?>
+                            </div>
                         </td>
                     </tr>
                 <?php endforeach; ?>
