@@ -2,7 +2,11 @@
 <?= $this->section('content') ?>
 <div class="container mt-5">
     <?php /** @var string $nazev */ ?> 
-    <h2><?= $nazev ?></h2>
+    
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="m-0"><?= $nazev ?></h2>
+        <?= anchor('etapa/upravit', 'Upravit', ['class' => 'btn btn-primary']) ?>
+    </div>
     <hr>
 
     <table class="table table-bordered table-striped">
