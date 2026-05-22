@@ -19,13 +19,22 @@
                                 <div class="form-floating">
                                     <select class="form-select" id="number" name="number" required>
                                         <option value="">Vyberte položku</option>
-                                        <?php if(isset($cisla_etap)): ?>
+                                        
+                                        <?php if(!empty($cisla_etap)): ?>
                                             <?php foreach($cisla_etap as $c): ?>
                                                 <option value="<?= $c ?>" <?= (isset($etapa) && $etapa->number == $c) ? 'selected' : '' ?>>
                                                     Etapa č. <?= $c ?>
                                                 </option>
                                             <?php endforeach; ?>
                                         <?php endif; ?>
+                                        
+                                        <?php if(!isset($etapa) || empty($etapa->id)): ?>
+                                            <?php $dalsi = !empty($cisla_etap) ? max($cisla_etap) + 1 : 1; ?>
+                                            <option value="<?= $dalsi ?>">
+                                                Etapa č. <?= $dalsi ?> (Nová)
+                                            </option>
+                                        <?php endif; ?>
+                                        
                                     </select>
                                     <label for="number">Číslo etapy <span class="text-danger">*</span></label>
                                 </div>

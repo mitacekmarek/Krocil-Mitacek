@@ -11,17 +11,19 @@ class ConForm extends BaseController
     {
         helper(['form']);
         $model = new \App\Models\EtapaI();
-        
-        // Najdeme konkrétní etapu, pokud bylo v URL zadáno ID
+
         $data['etapa'] = ($id) ? $model->find($id) : null;
         $data['nazev'] = ($id) ? "Úprava etapy č. " . $data['etapa']->number : "Vytvoření nové etapy";
-        
-        // Pro ten vnitřní input "Číslo etapy"
-        $data['cisla_etap'] = range(1, 21);
+
+        // Načteme jen čistá čísla etap
+        $vsechna_cisla = $model->orderBy('number', 'ASC')->findColumn('number') ?? [];
+
+        // array_filter: Smaže prázdné záznamy (ty duchy bez čísla)
+        // array_unique: Smaže duplicity
+        $data['cisla_etap'] = array_unique(array_filter($vsechna_cisla));
 
         return view('3stranka/index', $data);
     }
-
     // Uloží novou nebo upravenou etapu
     public function save()
     {
@@ -47,14 +49,13 @@ class ConForm extends BaseController
         return redirect()->to(base_url('/'))->with('success', 'Etapa byla úspěšně uložena.');
     }
 
-    // Provede soft delete rovnou z tabulky
+    // Provede soft delete
     public function delete($id)
     {
         if ($id) {
             $model = new \App\Models\EtapaI();
-            $model->delete($id); 
+            $model->delete($id);
         }
-        // Po smazání tě to vrátí zpět na hlavní stránku (tabulku)
         return redirect()->to(base_url('/'))->with('success', 'Etapa byla smazána.');
     }
 }
