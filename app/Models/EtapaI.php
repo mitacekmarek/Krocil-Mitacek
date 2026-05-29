@@ -12,7 +12,17 @@ class EtapaI extends Model
     protected $returnType       = 'object';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = [];
+    
+    // TADY JE TA ZMĚNA: Povolení sloupců pro ukládání a úpravu
+    protected $allowedFields    = [
+        'number', 
+        'departure', 
+        'arrival', 
+        'date', 
+        'distance', 
+        'profile', 
+        'note'
+    ];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;

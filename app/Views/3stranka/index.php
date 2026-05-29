@@ -50,12 +50,12 @@
 
                         <div class="form-floating mb-3">
                             <input type="text" class="form-control" id="departure" name="departure" placeholder="Start" value="<?= $etapa->departure ?? '' ?>" required>
-                            <label for="departure">Start etapy (Departure) <span class="text-danger">*</span></label>
+                            <label for="departure">Start etapy<span class="text-danger">*</span></label>
                         </div>
 
                         <div class="form-floating mb-3">
                             <input type="text" class="form-control" id="arrival" name="arrival" placeholder="Cíl" value="<?= $etapa->arrival ?? '' ?>" required>
-                            <label for="arrival">Cíl etapy (Arrival) <span class="text-danger">*</span></label>
+                            <label for="arrival">Cíl etapy<span class="text-danger">*</span></label>
                         </div>
 
                         <div class="row">
@@ -75,7 +75,7 @@
                         </div>
 
                         <div class="mb-4">
-                            <label class="form-label text-muted fw-bold">Podrobnosti / Poznámka k etapě (WYSIWYG)</label>
+                            <label class="form-label text-muted fw-bold">Podrobnosti etapy</label>
                             <textarea id="tinymce-editor" name="note"><?= $etapa->note ?? '' ?></textarea>
                         </div>
 
