@@ -5,7 +5,7 @@
     
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h2 class="m-0"><?= $nazev ?></h2>
-        <a href="<?= base_url('sprava') ?>" class="btn btn-success fw-bold fs-5 px-3 shadow-sm" title="Přidat novou etapu">
+        <a href="<?= base_url('sprava/add') ?>" class="btn btn-success fw-bold fs-5 px-3 shadow-sm" title="Přidat novou etapu">
             <i class="bi bi-plus-lg"></i>
         </a>
     </div>
@@ -17,7 +17,8 @@
                 <tr>
                     <th>ID</th>
                     <th>Číslo etapy</th>
-                    <th>Datum</th> <th>Start</th>
+                    <th>Datum</th> 
+                    <th>Start</th>
                     <th>Cíl</th>
                     <th>Vzdálenost</th>
                     <th class="text-center">Web</th>

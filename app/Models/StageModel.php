@@ -4,7 +4,7 @@ namespace App\Models;
 
 use CodeIgniter\Model;
 
-class EtapaI extends Model
+class StageModel extends Model
 {
     protected $table            = 'stage';
     protected $primaryKey       = 'id';

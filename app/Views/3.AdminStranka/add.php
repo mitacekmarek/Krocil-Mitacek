@@ -4,7 +4,7 @@
 <div class="container mt-5 mb-5">
     <?php 
         /** @var string $nazev */ 
-        /** @var int $dalsi_etapa */
+        /** @var array $mozna_cisla */
     ?>
     
     <div class="row justify-content-center">
@@ -20,7 +20,12 @@
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <div class="form-floating">
-                                    <input type="number" class="form-control" id="number" name="number" value="<?= $dalsi_etapa ?>" required readonly>
+                                    <select class="form-select" id="number" name="number" required>
+                                        <option value="">-- Vyber číslo --</option>
+                                        <?php foreach ($mozna_cisla as $cislo): ?>
+                                            <option value="<?= $cislo ?>"><?= $cislo ?>. etapa</option>
+                                        <?php endforeach; ?>
+                                    </select>
                                     <label for="number">Číslo etapy <span class="text-danger">*</span></label>
                                 </div>
                             </div>
@@ -43,19 +48,14 @@
                             <label for="arrival">Cíl etapy <span class="text-danger">*</span></label>
                         </div>
 
-                        <!-- 🔥 SEM JSEM PŘIDAL TVŮJ INSERT FILE BOX -->
                         <div class="mb-3 p-3 bg-light border rounded">
-    <label for="profile_image" class="form-label fw-bold">Soubor mapky (např. profile-1.jpg)</label>
-
-    <p class="text-muted small mb-2">
-        <i class="bi bi-info-circle"></i> Zatím není nahrán žádný soubor.
-    </p>
-
-    <input type="file" class="form-control" id="profile_image" name="profile_image" accept=".jpg, .png">
-    <div class="form-text">Nahrání obrázku je volitelné.</div>
-</div>
-
-                        <!-- 🔥 KONEC PŘIDANÉHO BLOKU -->
+                            <label for="profile_image" class="form-label fw-bold">Soubor mapky</label>
+                            <p class="text-muted small mb-2">
+                                <i class="bi bi-info-circle"></i> Zatím není nahrán žádný soubor.
+                            </p>
+                            <input type="file" class="form-control" id="profile_image" name="profile_image" accept=".jpg, .png">
+                            <div class="form-text">Nahrání obrázku je volitelné.</div>
+                        </div>
 
                         <div class="form-floating mb-3">
                             <input type="number" step="0.1" class="form-control" id="distance" name="distance" placeholder="Délka">
