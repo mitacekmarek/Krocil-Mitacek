@@ -3,10 +3,23 @@
 namespace App\Controllers;
 
 use App\Controllers\BaseController;
-use App\Libraries\Uploader; // Přidáme naši novou třídu pro upload
+use App\Libraries\Uploader;
 
 class ConForm extends BaseController
 {
+    // ==========================================
+    // SEZNAM ETAP (HLAVNÍ STRÁNKA SPRÁVY)
+    // ==========================================
+    public function index()
+    {
+        $model = new \App\Models\EtapaI();
+
+        $data['etapy'] = $model->findAll();
+        $data['nazev'] = "Správa etap";
+
+        return view('3stranka/index', $data);
+    }
+
     // ==========================================
     // PŘIDÁVÁNÍ NOVÉ ETAPY
     // ==========================================
@@ -17,13 +30,8 @@ class ConForm extends BaseController
         
         $data['nazev'] = "Vytvoření nové etapy";
         
-        // Zjistíme jaké má být další číslo etapy
         $vsechna_cisla = $model->findColumn('number');
-        if (empty($vsechna_cisla)) {
-            $data['dalsi_etapa'] = 1;
-        } else {
-            $data['dalsi_etapa'] = max($vsechna_cisla) + 1;
-        }
+        $data['dalsi_etapa'] = empty($vsechna_cisla) ? 1 : max($vsechna_cisla) + 1;
 
         return view('3stranka/add', $data);
     }
@@ -31,7 +39,7 @@ class ConForm extends BaseController
     public function create()
     {
         $model = new \App\Models\EtapaI();
-        $uploader = new Uploader(); // Načteme naši knihovnu
+        $uploader = new Uploader();
 
         $dbData = [
             'number'    => $this->request->getPost('number'),
@@ -42,29 +50,26 @@ class ConForm extends BaseController
             'note'      => $this->request->getPost('note'),
         ];
 
-        // Zpracování Uploadu Obrázku
+        // Upload obrázku
         $file = $this->request->getFile('profile_image');
         
         if ($file->isValid() && !$file->hasMoved()) {
-            // Nastavíme cestu kam se to uloží (složka public/obrazky/stages/profiles/)
             $path = FCPATH . 'obrazky/stages/profiles/';
-            // Název souboru (např. profile-1)
             $name = 'profile-' . $dbData['number'];
             
-            // Zavoláme naši metodu z návodu
             $uploadResult = $uploader->uploadFile($file, $path, $name);
             
             if ($uploadResult['uploaded']) {
-                $dbData['profile'] = $uploadResult['name']; // Uložíme název s příponou do DB
+                $dbData['profile'] = $uploadResult['name'];
             }
         }
 
         $model->insert($dbData);
-        return redirect()->to(base_url('/'))->with('success', 'Nová etapa byla vytvořena.');
+        return redirect()->to(base_url('/sprava'))->with('success', 'Nová etapa byla vytvořena.');
     }
 
     // ==========================================
-    // ÚPRAVA EXISTUJÍCÍ ETAPY
+    // ÚPRAVA ETAPY
     // ==========================================
     public function edit($id)
     {
@@ -73,9 +78,8 @@ class ConForm extends BaseController
         
         $etapa = $model->find($id);
         
-        // Pokud etapa neexistuje, hodíme ho pryč
         if ($etapa === null) {
-            return redirect()->to(base_url('/'))->with('error', 'Etapa nenalezena.');
+            return redirect()->to(base_url('/sprava'))->with('error', 'Etapa nenalezena.');
         }
 
         $data['etapa'] = $etapa;
@@ -98,10 +102,9 @@ class ConForm extends BaseController
             'note'      => $this->request->getPost('note'),
         ];
 
-        // Zpracování Uploadu Obrázku při úpravě
+        // Upload nového obrázku
         $file = $this->request->getFile('profile_image');
         
-        // Kontrola, jestli uživatel nahrál nový obrázek
         if ($file->isValid() && !$file->hasMoved()) {
             $path = FCPATH . 'obrazky/stages/profiles/';
             $name = 'profile-' . $dbData['number'];
@@ -109,23 +112,24 @@ class ConForm extends BaseController
             $uploadResult = $uploader->uploadFile($file, $path, $name);
             
             if ($uploadResult['uploaded']) {
-                $dbData['profile'] = $uploadResult['name']; 
+                $dbData['profile'] = $uploadResult['name'];
             }
         }
 
         $model->update($id, $dbData);
-        return redirect()->to(base_url('/'))->with('success', 'Etapa byla úspěšně upravena.');
+        return redirect()->to(base_url('/sprava'))->with('success', 'Etapa byla úspěšně upravena.');
     }
 
     // ==========================================
-    // SMAZÁNÍ
+    // SMAZÁNÍ ETAPY
     // ==========================================
     public function delete($id)
     {
         if ($id !== null) {
             $model = new \App\Models\EtapaI();
-            $model->delete($id); 
+            $model->delete($id);
         }
-        return redirect()->to(base_url('/'))->with('success', 'Etapa byla smazána.');
+
+        return redirect()->to(base_url('/sprava'))->with('success', 'Etapa byla smazána.');
     }
 }
