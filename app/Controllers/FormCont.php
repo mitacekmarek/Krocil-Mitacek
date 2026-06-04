@@ -12,6 +12,53 @@ class FormCont extends BaseController
         return range(1, 25);
     }
 
+    // Pomocná funkce: Najde jezdce v km_rider nebo vytvoří úplně nového
+    private function getOrCreateRider($celeJmeno)
+    {
+        $celeJmeno = trim($celeJmeno);
+        if (empty($celeJmeno)) return null;
+
+        $db = \Config\Database::connect();
+        
+        // Zkusíme najít jezdce podle jména
+        $jezdec = $db->query("
+            SELECT id FROM km_rider 
+            WHERE LOWER(TRIM(CONCAT(first_name, ' ', last_name))) = LOWER(TRIM(?))
+        ", [$celeJmeno])->getRow();
+
+        if ($jezdec) {
+            return $jezdec->id;
+        }
+
+        // Pokud v DB není, vytvoříme NOVÉHO RIDERA
+        $casti = explode(' ', $celeJmeno, 2);
+        $db->table('km_rider')->insert([
+            'first_name' => $casti[0],
+            'last_name'  => isset($casti[1]) ? $casti[1] : ''
+        ]);
+
+        return $db->insertID();
+    }
+
+    // Pomocná funkce: Uloží vítěze přímo do tvé tabulky km_result (rank = 1)
+    private function saveStageWinner($idStage, $idRider)
+    {
+        $db = \Config\Database::connect();
+        $resultTable = $db->table('km_result');
+
+        // Smažeme případného starého vítěze (rank 1) pro tuto etapu, aby tam nebyli dva
+        $resultTable->where(['id_stage' => $idStage, 'rank' => 1])->delete();
+
+        // Pokud máme ID jezdce, vložíme ho jako vítěze (rank = 1)
+        if ($idRider) {
+            $resultTable->insert([
+                'id_stage' => $idStage,
+                'id_rider' => $idRider,
+                'rank'     => 1 
+            ]);
+        }
+    }
+
     // ==========================================
     // PŘIDÁVÁNÍ NOVÉ ETAPY
     // ==========================================
@@ -20,7 +67,6 @@ class FormCont extends BaseController
         helper(['form']);
         $data['nazev'] = "Vytvoření nové etapy";
         $data['mozna_cisla'] = $this->getCislaEtap();
-
         return view('3.AdminStranka/add', $data);
     }
 
@@ -28,9 +74,9 @@ class FormCont extends BaseController
     {
         $model = new StageModel();
         $uploader = new Uploader();
-
+        
         $dbData = [
-            'id_race_year'    => 646, // Sjednoceno na 646 podle StageCont
+            'id_race_year'    => 646, 
             'number'          => $this->request->getPost('number'),
             'departure'       => $this->request->getPost('departure'),
             'arrival'         => $this->request->getPost('arrival'),
@@ -41,20 +87,23 @@ class FormCont extends BaseController
         ];
 
         $file = $this->request->getFile('profile_image');
-        
         if ($file && $file->isValid() && !$file->hasMoved()) {
             $path = FCPATH . 'obrazky/stages/profiles/';
             $name = 'profile-' . $dbData['number'];
-            
             $uploadResult = $uploader->uploadFile($file, $path, $name);
-            
             if ($uploadResult['uploaded']) {
                 $dbData['profile'] = $uploadResult['name'];
             }
         }
 
-        $model->insert($dbData);
-        
+        // 1. Uložíme etapu do km_stage a získáme její nové ID
+        $idStage = $model->insert($dbData);
+
+        // 2. Najdeme/vytvoříme jezdce a propojíme ho do km_result
+        $vitezJmeno = trim($this->request->getPost('vitez_jmeno'));
+        $idRider = $this->getOrCreateRider($vitezJmeno);
+        $this->saveStageWinner($idStage, $idRider);
+
         return redirect()->to(base_url('/'))->with('success', 'Etapa byla úspěšně vytvořena.');
     }
 
@@ -65,24 +114,27 @@ class FormCont extends BaseController
     {
         helper(['form']);
         $model = new StageModel();
-        
         $etapa = $model->find($id);
         
         if ($etapa === null) {
             return redirect()->to(base_url('/'))->with('error', 'Etapa nenalezena.');
         }
 
-        $db = \Config\Database::connect();
-        
-        // ROBUSTNÍ OPRAVA: Použití přímého SQL dotazu pro načtení vítěze, aby ho CodeIgniter nerozbil
-        $vitez = $db->query("
-            SELECT CONCAT(km_rider.first_name, ' ', km_rider.last_name) AS cele_jmeno 
-            FROM km_result 
-            JOIN km_rider ON km_rider.id = km_result.id_rider 
-            WHERE km_result.id_stage = ? AND km_result.rank = 1
-        ", [$id])->getRow();
+        $etapa->vitez_jmeno = '';
 
-        $etapa->vitez_jmeno = $vitez ? $vitez->cele_jmeno : '';
+        // Načteme jméno vítěze přesně tak, jak to dělá tvůj StageCont
+        $db = \Config\Database::connect();
+        $vitez = $db->table('km_result')
+                    ->select("CONCAT(km_rider.first_name, ' ', km_rider.last_name) AS cele_jmeno") 
+                    ->join('km_rider', 'km_rider.id = km_result.id_rider')
+                    ->where('km_result.id_stage', $id)
+                    ->where('km_result.rank', 1)
+                    ->get()
+                    ->getRow();
+
+        if ($vitez) {
+            $etapa->vitez_jmeno = $vitez->cele_jmeno;
+        }
 
         $data['etapa'] = $etapa;
         $data['nazev'] = "Úprava etapy č. " . $etapa->number;
@@ -107,47 +159,22 @@ class FormCont extends BaseController
         ];
 
         $file = $this->request->getFile('profile_image');
-        
         if ($file && $file->isValid() && !$file->hasMoved()) {
             $path = FCPATH . 'obrazky/stages/profiles/';
             $name = 'profile-' . $dbData['number'];
-            
             $uploadResult = $uploader->uploadFile($file, $path, $name);
-            
             if ($uploadResult['uploaded']) {
                 $dbData['profile'] = $uploadResult['name'];
             }
         }
 
-        // Uložení základních dat etapy do km_stage
+        // 1. Aktualizujeme data etapy
         $model->update($id, $dbData);
-        
-        $db = \Config\Database::connect();
-        $vitezJmeno = trim($this->request->getPost('vitez_jmeno')); 
 
-        // Smazání původního vítěze pro tuto etapu
-        $db->table('km_result')
-           ->where('id_stage', $id)
-           ->where('rank', 1)
-           ->delete();
-
-        // Uložení nového vítěze (pokud je pole vyplněné)
-        if (!empty($vitezJmeno)) {
-            // ROBUSTNÍ OPRAVA: Přímý SQL dotaz obchází automatické escapování Query Builderu
-            $jezdec = $db->query("SELECT id FROM km_rider WHERE CONCAT(first_name, ' ', last_name) = ?", [$vitezJmeno])->getRow();
-
-            if ($jezdec) {
-                $db->table('km_result')->insert([
-                    'id_stage'    => $id,
-                    'id_rider'    => $jezdec->id,
-                    'rank'        => 1,
-                    'type_result' => 1
-                ]);
-            } else {
-                // Pokud jméno v databázi vůbec neexistuje, vrátí chybovou hlášku na hlavní stranu
-                return redirect()->to(base_url('/'))->with('error', 'Etapa upravena, ale vítěz nebyl uložen! Jezdec jménem "' . $vitezJmeno . '" nebyl v databázi nalezen. Zkontrolujte překlepy a diakritiku.');
-            }
-        }
+        // 2. Aktualizujeme vítěze v km_result
+        $vitezJmeno = trim($this->request->getPost('vitez_jmeno'));
+        $idRider = $this->getOrCreateRider($vitezJmeno);
+        $this->saveStageWinner($id, $idRider);
         
         return redirect()->to(base_url('/'))->with('success', 'Etapa byla úspěšně upravena.');
     }
@@ -159,6 +186,10 @@ class FormCont extends BaseController
     {
         $model = new StageModel();
         if ($model->find($id)) {
+            $db = \Config\Database::connect();
+            // Smažeme i řádek z výsledků, ať v DB nezůstane nepořádek
+            $db->table('km_result')->where('id_stage', $id)->delete();
+            
             $model->delete($id);
             return redirect()->to(base_url('/'))->with('success', 'Etapa byla smazána.');
         }
