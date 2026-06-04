@@ -42,23 +42,74 @@
                                 <th>Jméno</th>
                                 <th class="text-center" style="width: 15%;">Stát</th>
                                 <th class="text-end" style="width: 20%;">Čas</th>
+                                <th class="text-end" style="width: 15%;">Ztráta</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php if (!empty($ranking)): ?>
+                                <?php 
+                                    // Najdeme nejlepší dostupný čas pro výpočet rozestupů
+                                    $vitez_cas = null;
+                                    foreach ($ranking as $jezdec) {
+                                        if (!empty($jezdec->time)) {
+                                            $vitez_cas = $jezdec->time;
+                                            break;
+                                        }
+                                    }
+                                ?>
+
                                 <?php foreach ($ranking as $r): ?>
                                     <tr>
                                         <td class="text-center fw-bold align-middle"><?= $r->rank ?>.</td>
                                         <td class="align-middle"><?= $r->first_name ?> <?= $r->last_name ?></td>
                                         <td class="text-center align-middle">
-                                            <span class="fi fi-<?= strtolower($r->country) ?> me-2 border"></span>
-                                            <?= strtoupper($r->country) ?>
+                                            <?php if (!empty($r->country)): ?>
+                                                <span class="fi fi-<?= strtolower($r->country) ?> me-2 border"></span>
+                                                <?= strtoupper($r->country) ?>
+                                            <?php else: ?>
+                                                <span class="text-muted">—</span>
+                                            <?php endif; ?>
                                         </td>
                                         <td class="text-end align-middle fw-semibold"><?= $r->time ?? '--:--' ?></td>
+                                        
+                                        <td class="text-end align-middle text-muted small fw-semibold">
+                                            <?php 
+                                                if (empty($r->time) || empty($vitez_cas)) {
+                                                    echo '—';
+                                                } else {
+                                                    // Převod časů na sekundy pro matematický odečet
+                                                    $sekundy_vitez = strtotime("1970-01-01 " . $vitez_cas);
+                                                    $sekundy_jezdec = strtotime("1970-01-01 " . $r->time);
+                                                    $rozdil = $sekundy_jezdec - $sekundy_vitez;
+
+                                                    if ($rozdil === 0) {
+                                                        // Vítěz nebo jezdci ve shodném čase lídra
+                                                        echo (int)$r->rank === 1 ? '—' : '+ 00:00';
+                                                    } else if ($rozdil > 0) {
+                                                        // Výpočet a formátování reálné ztráty
+                                                        $hodiny = floor($rozdil / 3600);
+                                                        $minuty = floor(($rozdil % 3600) / 60);
+                                                        $sekundy = $rozdil % 60;
+
+                                                        if ($hodiny > 0) {
+                                                            echo sprintf('+ %d:%02d:%02d', $hodiny, $minuty, $sekundy);
+                                                        } else {
+                                                            echo sprintf('+ %02d:%02d', $minuty, $sekundy);
+                                                        }
+                                                    } else {
+                                                        echo '—';
+                                                    }
+                                                }
+                                            ?>
+                                        </td>
                                     </tr>
                                 <?php endforeach; ?>
                             <?php else: ?>
-                                <tr><td colspan="4" class="text-center py-4 text-muted">Výsledky pro tuto etapu nebyly nalezeny.</td></tr>
+                                <tr>
+                                    <td colspan="5" class="text-center py-4 text-muted">
+                                        Výsledky pro tuto etapu nebyly nalezeny.
+                                    </td>
+                                </tr>
                             <?php endif; ?>
                         </tbody>
                     </table>
