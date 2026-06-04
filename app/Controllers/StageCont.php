@@ -3,34 +3,37 @@
 namespace App\Controllers;
 
 use App\Controllers\BaseController;
-use CodeIgniter\HTTP\RequestInterface;
-use CodeIgniter\HTTP\ResponseInterface;
-use Psr\Log\LoggerInterface;
-use App\Models\StageModel;  // OPRAVENO: Nový název modelu
-use App\Models\ResultModel;
+use App\Models\StageModel;
 
 class StageCont extends BaseController
 {
-    private $StageModel;    // OPRAVENO: Výstižnější název vlastnosti
-    private $ResultModel;
+    private $StageModel;
 
-    public function initController(RequestInterface $request, ResponseInterface $response, LoggerInterface $logger)
+    public function __construct()
     {
-        parent::initController($request, $response, $logger);
-        $this->StageModel = new StageModel();   // OPRAVENO
-        $this->ResultModel = new ResultModel();
+        $this->StageModel = new StageModel();
     }
 
     public function index()
     {
-        $data = [
-            'nazev' => 'La Tropicale Amissa Bongo 2023',
-            'etapy' => $this->StageModel->where('id_race_year', 646)
-                                        ->orderBy('number', 'ASC')
-                                        ->findAll()
-        ];
+        $etapy = $this->StageModel->where('id_race_year', 646)->orderBy('number', 'ASC')->findAll();
+        $db = \Config\Database::connect();
+        
+        foreach ($etapy as $etapa) {
+            $vitez = $db->table('km_result')
+                        ->select("CONCAT(km_rider.first_name, ' ', km_rider.last_name) AS cele_jmeno") 
+                        ->join('km_rider', 'km_rider.id = km_result.id_rider')
+                        ->where('km_result.id_stage', $etapa->id)
+                        ->where('km_result.rank', 1)
+                        ->get()
+                        ->getRow();
+            
+            $etapa->vitez_jmeno = $vitez ? $vitez->cele_jmeno : '—';
+        }
 
-        // OPRAVENO: Cesta k nové složce pohledů podle tvého screenshotu
-        return view('1.EtapyStranka/index', $data);
+        return view('1.EtapyStranka/index', [
+            'nazev' => 'La Tropicale Amissa Bongo 2023',
+            'etapy' => $etapy
+        ]);
     }
 }

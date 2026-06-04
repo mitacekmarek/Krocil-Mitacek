@@ -57,6 +57,11 @@
                             <label for="distance">Délka etapy (km)</label>
                         </div>
 
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" id="vitez_jmeno" name="vitez_jmeno" value="<?= $etapa->vitez_jmeno ?? '' ?>" placeholder="Jméno Příjmení">
+                            <label for="vitez_jmeno">Vítěz etapy (Jméno Příjmení)</label>
+                        </div>
+
                         <div class="mb-4">
                             <label class="form-label text-muted fw-bold">Podrobnosti etapy</label>
                             <textarea id="tinymce-editor" name="note"><?= $etapa->note ?></textarea>

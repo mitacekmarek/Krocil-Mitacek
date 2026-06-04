@@ -6,29 +6,30 @@ use CodeIgniter\Model;
 
 class StageModel extends Model
 {
-    protected $table            = 'stage';
+    // OPRAVENO: Název tabulky musí odpovídat databázi (km_stage)
+    protected $table            = 'km_stage'; 
     protected $primaryKey       = 'id';
     protected $useAutoIncrement = true;
     protected $returnType       = 'object';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
     
-    // TADY JE TA ZMĚNA: Povolení sloupců pro ukládání a úpravu
     protected $allowedFields    = [
         'number', 
         'departure', 
         'arrival', 
         'date', 
         'distance', 
+        'vertical_meters', 
         'profile', 
-        'note'
+        'note',
+        'link',
+        'id_race_year',
+        'parcour_type'
     ];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;
-
-    protected array $casts = [];
-    protected array $castHandlers = [];
 
     // Dates
     protected $useTimestamps = false;

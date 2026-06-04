@@ -1,11 +1,9 @@
 <?= $this->extend('layout/template') ?>
 <?= $this->section('content') ?>
 <div class="container mt-5">
-    <?php /** @var string $nazev */ ?> 
-    
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h2 class="m-0"><?= $nazev ?></h2>
-        <a href="<?= base_url('sprava/add') ?>" class="btn btn-success fw-bold fs-5 px-3 shadow-sm" title="Přidat novou etapu">
+        <a href="<?= base_url('sprava/add') ?>" class="btn btn-success fw-bold fs-5 px-3 shadow-sm">
             <i class="bi bi-plus-lg"></i>
         </a>
     </div>
@@ -21,7 +19,7 @@
                     <th>Start</th>
                     <th>Cíl</th>
                     <th>Vzdálenost</th>
-                    <th class="text-center">Web</th>
+                    <th>Vítěz</th> <th class="text-center">Web</th>
                     <th class="text-center">Detail</th>
                     <th class="text-center">Akce</th>
                 </tr>
@@ -32,42 +30,29 @@
                         <tr>
                             <td class="align-middle fw-bold"><?= $etapa->id ?></td>
                             <td class="align-middle"><?= $etapa->number ?>. etapa</td>
-                            
-                            <td class="align-middle">
-                                <?= !empty($etapa->date) ? date('d. m. Y', strtotime($etapa->date)) : 'Neznámé' ?>
-                            </td>
-                            
+                            <td class="align-middle"><?= !empty($etapa->date) ? date('d. m. Y', strtotime($etapa->date)) : 'Neznámé' ?></td>
                             <td class="align-middle"><?= $etapa->departure ?></td>
                             <td class="align-middle"><?= $etapa->arrival ?></td>
                             <td class="align-middle"><?= $etapa->distance ?> km</td>
+                            <td class="align-middle fw-bold text-primary"><?= $etapa->vitez_jmeno ?? '—' ?></td>
                             
                             <td class="text-center align-middle">
-                                <?= anchor($etapa->link, 'Odkaz', [
-                                    'target' => '_blank', 
-                                    'class'  => 'btn btn-outline-secondary btn-sm'
-                                ]) ?>
+                                <?= anchor($etapa->link, 'Odkaz', ['target' => '_blank', 'class' => 'btn btn-outline-secondary btn-sm']) ?>
                             </td>
-                            
                             <td class="text-center align-middle">
                                 <a href="<?= base_url('etapa/detail/' . $etapa->id) ?>" class="btn btn-primary btn-sm">Prozkoumat</a>
                             </td>
-
                             <td class="text-center align-middle">
                                 <div class="d-flex justify-content-center gap-2">
-                                    <a href="<?= base_url('sprava/edit/' . $etapa->id) ?>" class="btn btn-warning btn-sm shadow-sm" title="Upravit">
-                                        <i class="bi bi-pencil-square"></i>
-                                    </a>
-                                    
-                                    <a href="<?= base_url('sprava/delete/' . $etapa->id) ?>" class="btn btn-danger btn-sm shadow-sm" title="Smazat" onclick="return confirm('Opravdu chcete tuto etapu smazat?');">
-                                        <i class="bi bi-trash"></i>
-                                    </a>
+                                    <a href="<?= base_url('sprava/edit/' . $etapa->id) ?>" class="btn btn-warning btn-sm"><i class="bi bi-pencil-square"></i></a>
+                                    <a href="<?= base_url('sprava/delete/' . $etapa->id) ?>" class="btn btn-danger btn-sm" onclick="return confirm('Opravdu smazat?');"><i class="bi bi-trash"></i></a>
                                 </div>
                             </td>
                         </tr>
                     <?php endforeach; ?>
                 <?php else: ?>
                     <tr>
-                        <td colspan="9" class="text-center py-4">Zatím nebyly nalezeny žádné etapy.</td>
+                        <td colspan="10" class="text-center py-4">Zatím nebyly nalezeny žádné etapy pro tento ročník.</td>
                     </tr>
                 <?php endif; ?>
             </tbody>

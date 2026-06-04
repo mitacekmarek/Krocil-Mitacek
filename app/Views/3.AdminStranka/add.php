@@ -17,6 +17,8 @@
                     
                     <form action="<?= base_url('sprava/create') ?>" method="post" enctype="multipart/form-data">
 
+                        <input type="hidden" name="id_race_year" value="12283">
+
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <div class="form-floating">
@@ -84,10 +86,14 @@
 <script>
     tinymce.init({
         selector: '#tinymce-editor',
-        height: 300,
-        menubar: false,
-        plugins: ['advlist', 'autolink', 'lists', 'link', 'visualblocks', 'wordcount'],
-        toolbar: 'undo redo | bold italic | alignleft aligncenter alignright',
+        height: 400,
+        menubar: 'file edit insert view format table tools',
+        plugins: [
+            'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview', 
+            'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen', 
+            'insertdatetime', 'media', 'table', 'wordcount'
+        ],
+        toolbar: 'undo redo | blocks | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | table | removeformat',
     });
 </script>
 
