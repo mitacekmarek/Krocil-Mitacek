@@ -1,6 +1,7 @@
 <?= $this->extend('layout/template') ?>
 <?= $this->section('content') ?>
 <div class="container mt-5">
+    <?php /** @var string $nazev */ ?>
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h2 class="m-0"><?= $nazev ?></h2>
         <a href="<?= base_url('sprava/add') ?>" class="btn btn-success fw-bold fs-5 px-3 shadow-sm">
@@ -15,11 +16,12 @@
                 <tr>
                     <th>ID</th>
                     <th>Číslo etapy</th>
-                    <th>Datum</th> 
+                    <th>Datum</th>
                     <th>Start</th>
                     <th>Cíl</th>
                     <th>Vzdálenost</th>
-                    <th>Vítěz</th> <th class="text-center">Web</th>
+                    <th>Vítěz</th>
+                    <th class="text-center">Web</th>
                     <th class="text-center">Detail</th>
                     <th class="text-center">Akce</th>
                 </tr>
@@ -34,8 +36,8 @@
                             <td class="align-middle"><?= $etapa->departure ?></td>
                             <td class="align-middle"><?= $etapa->arrival ?></td>
                             <td class="align-middle"><?= $etapa->distance ?> km</td>
-                            <td class="align-middle fw-bold text-primary"><?= $etapa->vitez_jmeno ?? '—' ?></td>
-                            
+                            <td class="align-middle fw-bold "><?= $etapa->vitez_jmeno ?? '—' ?></td>
+
                             <td class="text-center align-middle">
                                 <?= anchor($etapa->link, 'Odkaz', ['target' => '_blank', 'class' => 'btn btn-outline-secondary btn-sm']) ?>
                             </td>

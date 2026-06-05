@@ -80,12 +80,13 @@
     </div>
 </div>
 
-<script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
 <script>
     tinymce.init({
-        selector: '#tinymce-editor',
-        height: 300,
+        selector: '#tinymce-editor',  // #hleda co ma id na tinymce editor
+        height: 500,
+        width: 500,
         menubar: false,
+        license_key: 'gpl',
         plugins: ['advlist', 'autolink', 'lists', 'link', 'visualblocks', 'wordcount'],
         toolbar: 'undo redo | bold italic | alignleft aligncenter alignright',
     });

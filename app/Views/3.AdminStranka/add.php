@@ -88,18 +88,15 @@
     </div>
 </div>
 
-<script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
 <script>
     tinymce.init({
-        selector: '#tinymce-editor',
-        height: 400,
-        menubar: 'file edit insert view format table tools',
-        plugins: [
-            'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview', 
-            'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen', 
-            'insertdatetime', 'media', 'table', 'wordcount'
-        ],
-        toolbar: 'undo redo | blocks | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | table | removeformat',
+        selector: '#tinymce-editor',  // #hleda co ma id na tinymce editor
+        height: 500,
+        width: 800,
+        menubar: false,
+        license_key: 'gpl',
+        plugins: ['advlist', 'autolink', 'lists', 'link', 'visualblocks', 'wordcount'],
+        toolbar: 'undo redo | bold italic | alignleft aligncenter alignright',
     });
 </script>
 

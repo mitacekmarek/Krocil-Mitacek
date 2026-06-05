@@ -29,7 +29,7 @@ class Database extends Config
         'hostname'     => 'localhost',
         'username'     => 'root',
         'password'     => '',
-        'database'     => 'mitacek',
+        'database'     => 'krocilf',
         'DBDriver'     => 'MySQLi',
         'DBPrefix'     => 'km_',
         'pConnect'     => false,
