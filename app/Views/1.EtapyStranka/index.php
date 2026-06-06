@@ -34,7 +34,7 @@
                             <td class="align-middle"><?= $etapa->departure ?></td>
                             <td class="align-middle"><?= $etapa->arrival ?></td>
                             <td class="align-middle"><?= $etapa->distance ?> km</td>
-                            <td class="align-middle fw-bold text-primary"><?= $etapa->vitez_jmeno ?? '—' ?></td>
+                            <td class="align-middle fw-bold"><?= $etapa->vitez_jmeno ?? '—' ?></td>
                             
                             <td class="text-center align-middle">
                                 <?= anchor($etapa->link, 'Odkaz', ['target' => '_blank', 'class' => 'btn btn-outline-secondary btn-sm']) ?>

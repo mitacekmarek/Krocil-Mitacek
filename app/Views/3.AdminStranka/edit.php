@@ -64,7 +64,7 @@
 
                         <div class="mb-4">
                             <label class="form-label text-muted fw-bold">Podrobnosti etapy</label>
-                            <textarea id="tinymce-editor" name="note"><?= $etapa->note ?></textarea>
+                            <textarea id="tinymce-editor" name="description"><?= $etapa->description ?? '' ?></textarea>
                         </div>
 
                         <hr>
@@ -80,14 +80,19 @@
     </div>
 </div>
 
-<script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
 <script>
     tinymce.init({
         selector: '#tinymce-editor',
-        height: 300,
-        menubar: false,
-        plugins: ['advlist', 'autolink', 'lists', 'link', 'visualblocks', 'wordcount'],
-        toolbar: 'undo redo | bold italic | alignleft aligncenter alignright',
+        license_key: 'gpl',
+        height: 400,
+        width: 800,
+        menubar: 'file edit insert view format table tools',
+        plugins: [
+            'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview', 
+            'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen', 
+            'insertdatetime', 'media', 'table', 'wordcount'
+        ],
+        toolbar: 'undo redo | blocks | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | table | removeformat',
     });
 </script>
 

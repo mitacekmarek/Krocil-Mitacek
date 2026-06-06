@@ -72,7 +72,7 @@
 
                         <div class="mb-4">
                             <label class="form-label text-muted fw-bold">Podrobnosti etapy</label>
-                            <textarea id="tinymce-editor" name="note"></textarea>
+                            <textarea id="tinymce-editor" name="description"></textarea>
                         </div>
 
                         <hr>
@@ -88,11 +88,12 @@
     </div>
 </div>
 
-<script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
 <script>
     tinymce.init({
         selector: '#tinymce-editor',
+        license_key: 'gpl',
         height: 400,
+        width: 800,
         menubar: 'file edit insert view format table tools',
         plugins: [
             'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview', 

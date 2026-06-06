@@ -84,6 +84,7 @@ class FormCont extends BaseController
             'distance'        => $this->request->getPost('distance') ?: 0,
             'vertical_meters' => $this->request->getPost('vertical_meters') ?: 0,
             'note'            => $this->request->getPost('note'),
+            'description'     => $this->request->getPost('description'), // <-- DOPLNĚNO
         ];
 
         $file = $this->request->getFile('profile_image');
@@ -156,6 +157,7 @@ class FormCont extends BaseController
             'distance'        => $this->request->getPost('distance') ?: 0,
             'vertical_meters' => $this->request->getPost('vertical_meters') ?: 0,
             'note'            => $this->request->getPost('note'),
+            'description'     => $this->request->getPost('description'), // <-- DOPLNĚNO
         ];
 
         $file = $this->request->getFile('profile_image');

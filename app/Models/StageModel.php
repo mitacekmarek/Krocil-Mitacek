@@ -24,7 +24,8 @@ class StageModel extends Model
         'note',
         'link',
         'id_race_year',
-        'parcour_type'
+        'parcour_type',
+        'description' // <-- DOPLNĚNO: Povolení zápisu popisu etapy
     ];
 
     protected bool $allowEmptyInserts = false;

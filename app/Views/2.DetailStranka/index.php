@@ -9,27 +9,29 @@
             <p class="fs-5">Trasa: <?= $etapa->departure ?? '?' ?> – <?= $etapa->arrival ?? '?' ?></p>
             
             <ul class="list-group shadow-sm mx-auto text-start mb-4" style="max-width: 400px;">
-                <li class="list-group-item">
-                    <strong>Vzdálenost:</strong> <?= $etapa->distance ?? '0' ?> km
-                </li>
-                <li class="list-group-item">
-                    <strong>Převýšení:</strong> <?= $etapa->vertical_meters ?? '0' ?> m
-                </li>
-                <li class="list-group-item">
-                    <strong>Typ trasy:</strong> <?= $etapa->parcour_name ?? 'Nespecifikováno' ?>
-                </li>
+                <li class="list-group-item"><strong>Vzdálenost:</strong> <?= $etapa->distance ?? '0' ?> km</li>
+                <li class="list-group-item"><strong>Převýšení:</strong> <?= $etapa->vertical_meters ?? '0' ?> m</li>
+                <li class="list-group-item"><strong>Typ trasy:</strong> <?= $etapa->parcour_name ?? 'Nespecifikováno' ?></li>
             </ul>
 
             <?php if (!empty($etapa->profile)): ?>
                 <div class="mx-auto" style="max-width: 800px;">
                     <img src="<?= base_url('obrazky/stages/profiles/' . $etapa->profile) ?>" 
-                         class="img-fluid rounded shadow" 
-                         alt="Profil etapy <?= $etapa->number ?>">
+                         class="img-fluid rounded shadow" alt="Profil etapy <?= $etapa->number ?>">
                 </div>
-            <?php else: ?>
-                <p class="text-muted small mt-3">Profil trati není k dispozici.</p>
             <?php endif; ?>
-        </div>
+
+            <?php if (!empty($etapa->description)): ?>
+                <div class="card mx-auto mt-5 shadow-sm text-start" style="max-width: 800px; border-radius: 8px;">
+                    <div class="card-header bg-white border-bottom">
+                        <h5 class="fw-bold mb-0 py-1">Podrobnosti etapy</h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <?= $etapa->description ?>
+                    </div>
+                </div>
+            <?php endif; ?>
+            </div>
         
         <div class="row justify-content-center">
             <div class="col-lg-10">
@@ -48,7 +50,6 @@
                         <tbody>
                             <?php if (!empty($ranking)): ?>
                                 <?php 
-                                    // Najdeme nejlepší dostupný čas pro výpočet rozestupů
                                     $vitez_cas = null;
                                     foreach ($ranking as $jezdec) {
                                         if (!empty($jezdec->time)) {
@@ -57,7 +58,6 @@
                                         }
                                     }
                                 ?>
-
                                 <?php foreach ($ranking as $r): ?>
                                     <tr>
                                         <td class="text-center fw-bold align-middle"><?= $r->rank ?>.</td>
@@ -71,31 +71,22 @@
                                             <?php endif; ?>
                                         </td>
                                         <td class="text-end align-middle fw-semibold"><?= $r->time ?? '--:--' ?></td>
-                                        
                                         <td class="text-end align-middle text-muted small fw-semibold">
                                             <?php 
                                                 if (empty($r->time) || empty($vitez_cas)) {
                                                     echo '—';
                                                 } else {
-                                                    // Převod časů na sekundy pro matematický odečet
                                                     $sekundy_vitez = strtotime("1970-01-01 " . $vitez_cas);
                                                     $sekundy_jezdec = strtotime("1970-01-01 " . $r->time);
                                                     $rozdil = $sekundy_jezdec - $sekundy_vitez;
 
                                                     if ($rozdil === 0) {
-                                                        // Vítěz nebo jezdci ve shodném čase lídra
                                                         echo (int)$r->rank === 1 ? '—' : '+ 00:00';
                                                     } else if ($rozdil > 0) {
-                                                        // Výpočet a formátování reálné ztráty
                                                         $hodiny = floor($rozdil / 3600);
                                                         $minuty = floor(($rozdil % 3600) / 60);
                                                         $sekundy = $rozdil % 60;
-
-                                                        if ($hodiny > 0) {
-                                                            echo sprintf('+ %d:%02d:%02d', $hodiny, $minuty, $sekundy);
-                                                        } else {
-                                                            echo sprintf('+ %02d:%02d', $minuty, $sekundy);
-                                                        }
+                                                        echo ($hodiny > 0) ? sprintf('+ %d:%02d:%02d', $hodiny, $minuty, $sekundy) : sprintf('+ %02d:%02d', $minuty, $sekundy);
                                                     } else {
                                                         echo '—';
                                                     }
@@ -106,9 +97,7 @@
                                 <?php endforeach; ?>
                             <?php else: ?>
                                 <tr>
-                                    <td colspan="5" class="text-center py-4 text-muted">
-                                        Výsledky pro tuto etapu nebyly nalezeny.
-                                    </td>
+                                    <td colspan="5" class="text-center py-4 text-muted">Výsledky pro tuto etapu nebyly nalezeny.</td>
                                 </tr>
                             <?php endif; ?>
                         </tbody>
@@ -119,7 +108,7 @@
         
     <?php else: ?>
         <div class="alert alert-danger shadow-sm">
-            <strong>Chyba:</strong> Data o etapě se nepodařilo načíst z tabulky <code>km_stage</code>.
+            <strong>Chyba:</strong> Data o etapě se nepodařilo načíst.
         </div>
     <?php endif; ?>
 
