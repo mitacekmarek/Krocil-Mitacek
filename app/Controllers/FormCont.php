@@ -5,6 +5,7 @@ namespace App\Controllers;
 use App\Controllers\BaseController;
 use App\Libraries\Uploader;
 use App\Models\StageModel;
+use App\Libraries\Alert; // <-- DOPLNĚNO: Načtení tvé knihovny pro hlášky
 
 class FormCont extends BaseController
 {
@@ -74,6 +75,7 @@ class FormCont extends BaseController
     {
         $model = new StageModel();
         $uploader = new Uploader();
+        $alert = new Alert(); // <-- Inicializace Alertu
         
         $dbData = [
             'id_race_year'    => 646, 
@@ -83,8 +85,8 @@ class FormCont extends BaseController
             'date'            => $this->request->getPost('date') ?: null,
             'distance'        => $this->request->getPost('distance') ?: 0,
             'vertical_meters' => $this->request->getPost('vertical_meters') ?: 0,
-            'note'            => $this->request->getPost('note'),
-            'description'     => $this->request->getPost('description'), // <-- DOPLNĚNO
+            'note'            => $this->request->getPost('note') ?? '', // Pojistka proti Column cannot be null
+            'description'     => $this->request->getPost('description'),
         ];
 
         $file = $this->request->getFile('profile_image');
@@ -105,7 +107,14 @@ class FormCont extends BaseController
         $idRider = $this->getOrCreateRider($vitezJmeno);
         $this->saveStageWinner($idStage, $idRider);
 
-        return redirect()->to(base_url('/'))->with('success', 'Etapa byla úspěšně vytvořena.');
+        // 3. Nastavení hlášky s ID nově vytvořené etapy
+        if ($idStage) {
+            $alert->set('success', 'recordCreated', ['id' => $idStage]);
+        } else {
+            $alert->set('danger', 'recordCreated', ['id' => 0]);
+        }
+
+        return redirect()->to(base_url('/'));
     }
 
     // ==========================================
@@ -118,7 +127,9 @@ class FormCont extends BaseController
         $etapa = $model->find($id);
         
         if ($etapa === null) {
-            return redirect()->to(base_url('/'))->with('error', 'Etapa nenalezena.');
+            $alert = new Alert();
+            $alert->set('danger', 'saveFailed');
+            return redirect()->to(base_url('/'));
         }
 
         $etapa->vitez_jmeno = '';
@@ -148,6 +159,7 @@ class FormCont extends BaseController
     {
         $model = new StageModel();
         $uploader = new Uploader();
+        $alert = new Alert(); // <-- Inicializace Alertu
 
         $dbData = [
             'number'          => $this->request->getPost('number'),
@@ -156,8 +168,8 @@ class FormCont extends BaseController
             'date'            => $this->request->getPost('date') ?: null,
             'distance'        => $this->request->getPost('distance') ?: 0,
             'vertical_meters' => $this->request->getPost('vertical_meters') ?: 0,
-            'note'            => $this->request->getPost('note'),
-            'description'     => $this->request->getPost('description'), // <-- DOPLNĚNO
+            'note'            => $this->request->getPost('note') ?? '', // Pojistka proti Column cannot be null
+            'description'     => $this->request->getPost('description'),
         ];
 
         $file = $this->request->getFile('profile_image');
@@ -171,14 +183,21 @@ class FormCont extends BaseController
         }
 
         // 1. Aktualizujeme data etapy
-        $model->update($id, $dbData);
+        $updated = $model->update($id, $dbData);
 
         // 2. Aktualizujeme vítěze v km_result
         $vitezJmeno = trim($this->request->getPost('vitez_jmeno'));
         $idRider = $this->getOrCreateRider($vitezJmeno);
         $this->saveStageWinner($id, $idRider);
         
-        return redirect()->to(base_url('/'))->with('success', 'Etapa byla úspěšně upravena.');
+        // 3. Nastavení hlášky o úspěšné úpravě s ID etapy
+        if ($updated) {
+            $alert->set('success', 'recordUpdated', ['id' => $id]);
+        } else {
+            $alert->set('danger', 'recordUpdated', ['id' => $id]);
+        }
+
+        return redirect()->to(base_url('/'));
     }
 
     // ==========================================
@@ -187,15 +206,22 @@ class FormCont extends BaseController
     public function delete($id)
     {
         $model = new StageModel();
+        $alert = new Alert(); // <-- Inicializace Alertu
+
         if ($model->find($id)) {
             $db = \Config\Database::connect();
             // Smažeme i řádek z výsledků, ať v DB nezůstane nepořádek
             $db->table('km_result')->where('id_stage', $id)->delete();
             
             $model->delete($id);
-            return redirect()->to(base_url('/'))->with('success', 'Etapa byla smazána.');
+
+            // Nastavení hlášky o úspěšném smazání s ID etapy
+            $alert->set('success', 'recordDeleted', ['id' => $id]);
+            return redirect()->to(base_url('/'));
         }
 
-        return redirect()->to(base_url('/'))->with('error', 'Etapa nebyla nalezena, nelze smazat.');
+        // Pokud se etapu vůbec nepodařilo v DB najít pro smazání
+        $alert->set('danger', 'recordDeleted', ['id' => $id]);
+        return redirect()->to(base_url('/'));
     }
 }

@@ -1,6 +1,20 @@
 <?= $this->extend('layout/template') ?>
 <?= $this->section('content') ?>
 <div class="container mt-5">
+
+    <?php if (session()->getFlashdata('alert')): ?>
+        <?php $alert = session()->getFlashdata('alert'); ?>
+        <div class="alert alert-<?= $alert['type'] ?> alert-dismissible fade show shadow-sm mb-4" role="alert">
+            <?php if ($alert['type'] === 'success'): ?>
+                <i class="bi bi-check-circle-fill me-2"></i>
+            <?php else: ?>
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            <?php endif; ?>
+            
+            <?= $alert['message'] ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    <?php endif; ?>
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h2 class="m-0"><?= $nazev ?></h2>
         <a href="<?= base_url('sprava/add') ?>" class="btn btn-success fw-bold fs-5 px-3 shadow-sm">
