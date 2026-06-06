@@ -41,4 +41,5 @@ class StageDetailCont extends BaseController
         // OPRAVENO: Směrování do tvé nové složky pohledů
         return view('2.DetailStranka/index', $data);
     }
+    
 }
