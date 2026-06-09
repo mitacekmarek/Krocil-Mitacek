@@ -4,7 +4,7 @@
 
     <?php if (session()->getFlashdata('alert')): ?>
         <?php $alert = session()->getFlashdata('alert'); ?>
-        <div class="alert alert-<?= $alert['type'] ?> alert-dismissible fade show shadow-sm mb-4" role="alert">
+        <div class="alert alert-<?= $alert['type'] ?> alert-dismissible fade show shadow-sm mb-4" role="alert"> 
             <?php if ($alert['type'] === 'success'): ?>
                 <i class="bi bi-check-circle-fill me-2"></i>
             <?php else: ?>

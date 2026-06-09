@@ -2,7 +2,7 @@
 <?= $this->section('content') ?>
 
 <div class="container mt-4">
-    <?php if (isset($etapa) && $etapa !== null): ?>
+    <?php if (!empty($etapa)): ?>
         
         <div class="mb-5 text-center">
             <h1>Etapa č. <?= $etapa->number ?? 'Neznámé' ?></h1>
@@ -12,7 +12,7 @@
                 <li class="list-group-item"><strong>Vzdálenost:</strong> <?= $etapa->distance ?? '0' ?> km</li>
                 <li class="list-group-item"><strong>Převýšení:</strong> <?= $etapa->vertical_meters ?? '0' ?> m</li>
                 <li class="list-group-item"><strong>Typ trasy:</strong> <?= $etapa->parcour_name ?? 'Nespecifikováno' ?></li>
-            </ul>
+            </ul> 
 
             <?php if (!empty($etapa->profile)): ?>
                 <div class="mx-auto" style="max-width: 800px;">
@@ -31,7 +31,7 @@
                     </div>
                 </div>
             <?php endif; ?>
-            </div>
+        </div>
         
         <div class="row justify-content-center">
             <div class="col-lg-10">
@@ -58,6 +58,7 @@
                                         }
                                     }
                                 ?>
+                                
                                 <?php foreach ($ranking as $r): ?>
                                     <tr>
                                         <td class="text-center fw-bold align-middle"><?= $r->rank ?>.</td>
@@ -81,12 +82,21 @@
                                                     $rozdil = $sekundy_jezdec - $sekundy_vitez;
 
                                                     if ($rozdil === 0) {
-                                                        echo (int)$r->rank === 1 ? '—' : '+ 00:00';
+                                                        if ((int)$r->rank === 1) {
+                                                            echo '—';
+                                                        } else {
+                                                            echo '+ 00:00';
+                                                        }
                                                     } else if ($rozdil > 0) {
                                                         $hodiny = floor($rozdil / 3600);
                                                         $minuty = floor(($rozdil % 3600) / 60);
                                                         $sekundy = $rozdil % 60;
-                                                        echo ($hodiny > 0) ? sprintf('+ %d:%02d:%02d', $hodiny, $minuty, $sekundy) : sprintf('+ %02d:%02d', $minuty, $sekundy);
+
+                                                        if ($hodiny > 0) {
+                                                            echo sprintf('+ %d:%02d:%02d', $hodiny, $minuty, $sekundy);
+                                                        } else {
+                                                            echo sprintf('+ %02d:%02d', $minuty, $sekundy);
+                                                        }
                                                     } else {
                                                         echo '—';
                                                     }
