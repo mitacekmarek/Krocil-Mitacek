@@ -37,7 +37,7 @@ class StageDetailCont extends BaseController
             return "Chyba: Etapa s ID $id nebyla v databázi nalezena! Zkontroluj tabulku 'stage'."; // pokud etapa není nalezena, vypíše chybu
         }
 
-        // OPRAVENO: Směrování do tvé nové složky pohledů
+       
         return view('2.DetailStranka/index', $data); //vypíše info na stránku index DetailStranka
     }
     

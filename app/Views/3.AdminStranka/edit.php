@@ -84,6 +84,7 @@
     tinymce.init({
         selector: '#tinymce-editor',
         license_key: 'gpl',
+        promotion: false,
         height: 400,
         width: 800,
         menubar: 'file edit insert view format table tools',
