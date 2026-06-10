@@ -15,7 +15,7 @@
                 </div>
                 <div class="card-body p-4">
                     
-                    <form action="<?= base_url('sprava/update/' . $etapa->id) ?>" method="post" enctype="multipart/form-data">
+                    <form action="<?= base_url('sprava/update/' . $etapa->id) ?>" method="post" enctype="multipart/form-data"> 
 
                         <div class="row">
                             <div class="col-md-6 mb-3">
@@ -64,7 +64,7 @@
 
                         <div class="mb-4">
                             <label class="form-label text-muted fw-bold">Podrobnosti etapy</label>
-                            <textarea id="tinymce-editor" name="note"><?= $etapa->note ?></textarea>
+                            <textarea id="tinymce-editor" name="description"><?= $etapa->description ?? '' ?></textarea>
                         </div>
 
                         <hr>
@@ -82,6 +82,7 @@
 
 <script>
     tinymce.init({
+<<<<<<< HEAD
         selector: '#tinymce-editor',  // #hleda co ma id na tinymce editor
         height: 500,
         width: 500,
@@ -89,6 +90,19 @@
         license_key: 'gpl',
         plugins: ['advlist', 'autolink', 'lists', 'link', 'visualblocks', 'wordcount'],
         toolbar: 'undo redo | bold italic | alignleft aligncenter alignright',
+=======
+        selector: '#tinymce-editor',
+        license_key: 'gpl',
+        height: 400,
+        width: 800,
+        menubar: 'file edit insert view format table tools',
+        plugins: [
+            'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview', 
+            'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen', 
+            'insertdatetime', 'media', 'table', 'wordcount'
+        ],
+        toolbar: 'undo redo | blocks | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | table | removeformat',
+>>>>>>> ac2142d0e55e74033d94c7585e2546c8d193c603
     });
 </script>
 

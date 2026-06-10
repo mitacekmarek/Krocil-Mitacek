@@ -1,7 +1,24 @@
 <?= $this->extend('layout/template') ?>
 <?= $this->section('content') ?>
 <div class="container mt-5">
+<<<<<<< HEAD
     <?php /** @var string $nazev */ ?>
+=======
+
+    <?php if (session()->getFlashdata('alert')): ?>
+        <?php $alert = session()->getFlashdata('alert'); ?>
+        <div class="alert alert-<?= $alert['type'] ?> alert-dismissible fade show shadow-sm mb-4" role="alert"> 
+            <?php if ($alert['type'] === 'success'): ?>
+                <i class="bi bi-check-circle-fill me-2"></i>
+            <?php else: ?>
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            <?php endif; ?>
+            
+            <?= $alert['message'] ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    <?php endif; ?>
+>>>>>>> ac2142d0e55e74033d94c7585e2546c8d193c603
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h2 class="m-0"><?= $nazev ?></h2>
         <a href="<?= base_url('sprava/add') ?>" class="btn btn-success fw-bold fs-5 px-3 shadow-sm">
@@ -36,8 +53,13 @@
                             <td class="align-middle"><?= $etapa->departure ?></td>
                             <td class="align-middle"><?= $etapa->arrival ?></td>
                             <td class="align-middle"><?= $etapa->distance ?> km</td>
+<<<<<<< HEAD
                             <td class="align-middle fw-bold "><?= $etapa->vitez_jmeno ?? '—' ?></td>
 
+=======
+                            <td class="align-middle fw-bold"><?= $etapa->vitez_jmeno ?? '—' ?></td>
+                            
+>>>>>>> ac2142d0e55e74033d94c7585e2546c8d193c603
                             <td class="text-center align-middle">
                                 <?= anchor($etapa->link, 'Odkaz', ['target' => '_blank', 'class' => 'btn btn-outline-secondary btn-sm']) ?>
                             </td>

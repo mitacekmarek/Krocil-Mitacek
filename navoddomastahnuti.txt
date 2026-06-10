@@ -3,3 +3,6 @@ npm i
 composer update
 obrazky si stahni sam
 a dej git pull a napoj se na git knihovnu
+
+1. přidat knihovnu tinymce
+2. přidat sloupec description v DB do tabulky km_stage

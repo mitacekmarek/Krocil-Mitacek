@@ -72,7 +72,7 @@
 
                         <div class="mb-4">
                             <label class="form-label text-muted fw-bold">Podrobnosti etapy</label>
-                            <textarea id="tinymce-editor" name="note"></textarea>
+                            <textarea id="tinymce-editor" name="description"></textarea>
                         </div>
 
                         <hr>
@@ -90,6 +90,7 @@
 
 <script>
     tinymce.init({
+<<<<<<< HEAD
         selector: '#tinymce-editor',  // #hleda co ma id na tinymce editor
         height: 500,
         width: 800,
@@ -97,6 +98,19 @@
         license_key: 'gpl',
         plugins: ['advlist', 'autolink', 'lists', 'link', 'visualblocks', 'wordcount'],
         toolbar: 'undo redo | bold italic | alignleft aligncenter alignright',
+=======
+        selector: '#tinymce-editor',
+        license_key: 'gpl',
+        height: 400,
+        width: 800,
+        menubar: 'file edit insert view format table tools',
+        plugins: [
+            'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview', 
+            'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen', 
+            'insertdatetime', 'media', 'table', 'wordcount'
+        ],
+        toolbar: 'undo redo | blocks | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | table | removeformat',
+>>>>>>> ac2142d0e55e74033d94c7585e2546c8d193c603
     });
 </script>
 
