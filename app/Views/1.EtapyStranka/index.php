@@ -1,7 +1,7 @@
 <?= $this->extend('layout/template') ?>
 <?= $this->section('content') ?>
 <div class="container mt-5">
-
+<?php /** @var string $nazev */ ?>
     <?php if (session()->getFlashdata('alert')): ?>
         <?php $alert = session()->getFlashdata('alert'); ?>
         <div class="alert alert-<?= $alert['type'] ?> alert-dismissible fade show shadow-sm mb-4" role="alert"> 
