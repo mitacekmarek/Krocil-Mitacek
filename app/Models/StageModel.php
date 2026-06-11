@@ -10,8 +10,12 @@ class StageModel extends Model
     protected $primaryKey       = 'id'; //získává id z tabulky 'km_stage'
     protected $useAutoIncrement = true; //přidělování id automaticky při novém záznamu
     protected $returnType       = 'object'; //vrací objekt ne pole
-    protected $useSoftDeletes   = false; //řádky se z databáze odstraní úplně
-    protected $protectFields    = true; //ochrana proti neoprávněnému zápisu do databáze
+    protected $useSoftDeletes   = true; //neodstraňuje záznamy úplně, ale pouze je označí jako smazané (pro případné obnovení)
+    protected $protectFields    = true;
+    protected $dateFormat    = 'datetime';
+    protected $createdField  = 'created_at';
+    protected $updatedField  = 'updated_at';
+    protected $deletedField  = 'deleted_at';    
     
     protected $allowedFields    = [
         'number', //číslo etapy
@@ -31,5 +35,5 @@ class StageModel extends Model
     protected bool $allowEmptyInserts = false; //neumožní vložit prázdný záznam 
     protected bool $updateOnlyChanged = true; //při editu se změní jen změněné pole, ne všechny
 
-    protected $useTimestamps = false; //nebudou se automaticky ukládat časové značky (created_at, updated_at, deleted_at)
+    protected $useTimestamps = true; 
 }

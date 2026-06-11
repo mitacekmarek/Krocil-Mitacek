@@ -113,6 +113,13 @@
                         </tbody>
                     </table>
                 </div>
+
+                <?php if (!empty($ranking)): ?>
+                    <div class="mt-4">
+                        <?= $pager->links('default', 'moje_strankovani') ?>
+                    </div>
+                <?php endif; ?>
+
             </div>
         </div>
         

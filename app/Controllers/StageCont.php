@@ -4,36 +4,40 @@ namespace App\Controllers;
 
 use App\Controllers\BaseController;
 use App\Models\StageModel;
+use App\Models\ResultModel;
 
 class StageCont extends BaseController
 {
     private $StageModel;
+    private $ResultModel; 
 
-    public function __construct() // konstruktor, který se spustí při vytvoření instance třídy StageCont
+    // Konstruktor, který se spustí při vytvoření instance třídy StageCont
+    public function __construct() 
     {
         $this->StageModel = new StageModel();
+        $this->ResultModel = new ResultModel(); 
     }
 
     public function index()
     {
-        $etapy = $this->StageModel->where('id_race_year', 646)->orderBy('number', 'ASC')->findAll(); // získá všechny etapy pro závod s ID 646 a seřadí je podle čísla etapy vzestupně
-        $db = \Config\Database::connect();
+        // Získá všechny aktivní etapy pro závod s ID 646 (CodeIgniter automaticky vynechá soft-smazané)
+        $etapy = $this->StageModel->where('id_race_year', 646)->orderBy('number', 'ASC')->findAll(); 
         
         foreach ($etapy as $etapa) { 
-            $vitez = $db->table('km_result') // pracuje s tabulkou km_result, která obsahuje výsledky etap
-                        ->select("CONCAT(km_rider.first_name, ' ', km_rider.last_name) AS cele_jmeno") // spojí jméno a příjmení jezdce do jednoho pole "cele_jmeno"
-                        ->join('km_rider', 'km_rider.id = km_result.id_rider') // joine tabulky km_result s km_rider, aby získal jméno vítěze pro danou etapu
-                        ->where('km_result.id_stage', $etapa->id) // hledá výsledky pro danou etapu podle ID
-                        ->where('km_result.rank', 1) // hledá vítěze (rank = 1) pro danou etapu
-                        ->get() // provede dotaz, který spojí tabulku km_result s km_rider, aby získal jméno vítěze pro danou etapu
-                        ->getRow(); // získá jméno vítěze pro každou etapu, pokud existuje
+           
+            $vitez = $this->ResultModel->asObject()
+                        ->select("CONCAT(km_rider.first_name, ' ', km_rider.last_name) AS cele_jmeno") // Spojí jméno a příjmení
+                        ->join('km_rider', 'km_rider.id = km_result.id_rider') // Propojení s tabulkou jezdců
+                        ->where('km_result.id_stage', $etapa->id) // Hledá výsledky pro konkrétní etapu
+                        ->where('km_result.rank', 1) // Hledá pouze vítěze (1. místo)
+                        ->first(); // Nahrazuje get()->getRow() – vrátí první nalezený řádek jako objekt
             
-            $etapa->vitez_jmeno = $vitez ? $vitez->cele_jmeno : '—'; // pokud není vítěz, zobrazí se pomlčka (? = nebo, : = jinak)
+            $etapa->vitez_jmeno = $vitez ? $vitez->cele_jmeno : '—'; // Pokud není vítěz, zobrazí se pomlčka
         }
 
-        return view('1.EtapyStranka/index', [ // zobrazí info na úvodní stránce 
-            'nazev' => 'La Tropicale Amissa Bongo 2023', // název závodu
-            'etapy' => $etapy // vypíše všechny etapy s informací o vítězi
+        return view('1.EtapyStranka/index', [ // Zobrazí info na úvodní stránce 
+            'nazev' => 'La Tropicale Amissa Bongo 2023', // Název závodu
+            'etapy' => $etapy // Vypíše všechny etapy s informací o vítězi
         ]);
     }
 }

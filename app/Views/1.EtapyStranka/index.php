@@ -15,6 +15,7 @@
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     <?php endif; ?>
+    
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h2 class="m-0"><?= $nazev ?></h2>
         <a href="<?= base_url('sprava/add') ?>" class="btn btn-success fw-bold fs-5 px-3 shadow-sm">
@@ -33,7 +34,8 @@
                     <th>Start</th>
                     <th>Cíl</th>
                     <th>Vzdálenost</th>
-                    <th>Vítěz</th> <th class="text-center">Web</th>
+                    <th>Vítěz</th> 
+                    <th class="text-center">Web</th>
                     <th class="text-center">Detail</th>
                     <th class="text-center">Akce</th>
                 </tr>
@@ -59,7 +61,15 @@
                             <td class="text-center align-middle">
                                 <div class="d-flex justify-content-center gap-2">
                                     <a href="<?= base_url('sprava/edit/' . $etapa->id) ?>" class="btn btn-warning btn-sm"><i class="bi bi-pencil-square"></i></a>
-                                    <a href="<?= base_url('sprava/delete/' . $etapa->id) ?>" class="btn btn-danger btn-sm" onclick="return confirm('Opravdu smazat?');"><i class="bi bi-trash"></i></a>
+                                    
+                                    <button type="button" 
+                                            class="btn btn-danger btn-sm open-delete-modal" 
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="#deleteModal"
+                                            data-id="<?= $etapa->id ?>"
+                                            data-name="<?= $etapa->number ?>. etapu (<?= $etapa->departure ?> – <?= $etapa->arrival ?>)">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
                                 </div>
                             </td>
                         </tr>
@@ -73,4 +83,40 @@
         </table>
     </div>
 </div>
+
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="deleteModalLabel"><i class="bi bi-exclamation-triangle-fill me-2"></i>Potvrzení smazání</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body fs-5">
+                Opravdu si přejete smazat <strong id="deleteStageName"></strong>? Tato akce je nevratná.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Zrušit</button>
+                <a href="#" id="confirmDeleteBtn" class="btn btn-danger fw-bold">Ano, smazat</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () { // Po načtení celé stránky
+    const deleteButtons = document.querySelectorAll('.open-delete-modal'); // Vybereme všechna tlačítka, která otevírají modální okno pro smazání
+    const deleteStageNameSpan = document.getElementById('deleteStageName'); // Element pro zobrazení názvu etapy v modálním okně
+    const confirmDeleteBtn = document.getElementById('confirmDeleteBtn'); // Odkaz pro potvrzení smazání
+
+    deleteButtons.forEach(button => { // Pro každé tlačítko přidáme posluchač události
+        button.addEventListener('click', function () { // Při kliknutí na tlačítko pro smazání
+            const id = this.getAttribute('data-id'); // Získá ID etapy z data atributu
+            const name = this.getAttribute('data-name'); // Získá název etapy z data atributu
+            deleteStageNameSpan.textContent = name; // Dynamicky nastaví název etapy v modálním okně
+            confirmDeleteBtn.setAttribute('href', '<?= base_url('sprava/delete/') ?>' + id); // Dynamicky nastaví odkaz pro potvrzení smazání
+        });
+    });
+});
+</script>
+
 <?= $this->endSection() ?>

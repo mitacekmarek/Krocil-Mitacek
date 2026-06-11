@@ -10,7 +10,7 @@ class ResultModel extends Model // Hlavní třída modelu pro práci s výsledky
     protected $primaryKey       = 'id'; // Určuje název sloupce, který slouží jako primární klíč
     protected $useAutoIncrement = true; // Říká, že databáze bude ID generovat automaticky od jedničky nahoru
     protected $returnType       = 'object'; // Nastavuje, že výsledky se z databáze budou vracet jako objekty
-    protected $useSoftDeletes   = false; // Vypíná bezpečné mazání (záznamy se z DB smažou úplně a natrvalo)
+    protected $useSoftDeletes   = true; 
     protected $protectFields    = true; // Zapíná ochranu polí před neoprávněným hromadným vložením dat
     protected $allowedFields    = ['id_stage', 'id_rider', 'rank']; // Seznam sloupců, do kterých je povoleno zapisovat data
 
@@ -21,7 +21,7 @@ class ResultModel extends Model // Hlavní třída modelu pro práci s výsledky
     protected array $castHandlers = []; // Definuje vlastní pokročilá pravidla pro přetypování dat
 
     // Dates
-    protected $useTimestamps = false; // Vypíná automatické ukládání času vytvoření a úpravy řádku
+    protected $useTimestamps = true; 
     protected $dateFormat    = 'datetime'; // Nastavuje formát ukládání datumu a času v databázi
     protected $createdField  = 'created_at'; // Určuje název sloupce pro automatický čas vytvoření záznamu
     protected $updatedField  = 'updated_at'; // Určuje název sloupce pro automatický čas poslední úpravy

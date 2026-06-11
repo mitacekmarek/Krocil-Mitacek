@@ -22,23 +22,24 @@ class StageDetailCont extends BaseController
                                     ->where('km_stage.id', $id)
                                     ->first();
                                     
-        $data['nazev'] = "Detail etapy"; // zobrazuje název Detail etapy
+        $data['nazev'] = "Detail etapy"; 
 
-        // výpis všech výsledků pro danou etapu, včetně jména, příjmení a země jezdce, seřazených podle umístění
-        $data['ranking'] = $resultModel->select('km_result.*, km_rider.first_name, km_rider.last_name, km_rider.country') // výběr všech sloupců z km_result a jména, příjmení a země z km_rider
-                                       ->join('km_rider', 'km_rider.id = km_result.id_rider') // spojení s tabulkou jezdců pro získání jména, příjmení a země
-                                       ->where('km_result.id_stage', $id) // pouze výsledky pro aktuální etapu
-                                       ->where('km_result.type_result', 1) // pouze výsledky pro etapu
-                                       ->where('km_result.rank >', 0) // pouze jezdci s umístěním větším než 0
-                                       ->orderBy('km_result.rank', 'ASC') // řazení podle umístění vzestupně
-                                       ->findAll(); //vypíše všechny výsledky, které odpovídají zadaným podmínkám
+        $perPage = config('Pager')->perPageDetail;
+
+        $data['ranking'] = $resultModel->select('km_result.*, km_rider.first_name, km_rider.last_name, km_rider.country') 
+                                       ->join('km_rider', 'km_rider.id = km_result.id_rider') 
+                                       ->where('km_result.id_stage', $id) 
+                                       ->where('km_result.type_result', 1) 
+                                       ->where('km_result.rank >', 0) 
+                                       ->orderBy('km_result.rank', 'ASC') 
+                                       ->paginate($perPage); // Zde stránkujeme podle konfiguračního čísla
     
-        if (!$data['etapa']) { //Kontrola, zda byla etapa nalezena v databázi
-            return "Chyba: Etapa s ID $id nebyla v databázi nalezena! Zkontroluj tabulku 'stage'."; // pokud etapa není nalezena, vypíše chybu
+        $data['pager'] = $resultModel->pager;
+
+        if (!$data['etapa']) { 
+            return "Chyba: Etapa s ID $id nebyla v databázi nalezena! Zkontroluj tabulku 'stage'."; 
         }
 
-        // OPRAVENO: Směrování do tvé nové složky pohledů
-        return view('2.DetailStranka/index', $data); //vypíše info na stránku index DetailStranka
+        return view('2.DetailStranka/index', $data); 
     }
-    
 }
